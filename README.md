@@ -121,7 +121,6 @@ Il est relatif par rapport au repertoire `migrations`.
 Le fichier `migrations/.heads` permet de déclarer explicitement les migrations racines du graphe (celles dont aucune autre ne dépend). Quand il est présent :
 
 - `./migrate.sh up` n'applique que les chaînes issues des têtes déclarées
-- `./migrate.sh graph` part de ces têtes pour construire le graphe
 
 ```text
 # migrations/.heads
@@ -130,7 +129,7 @@ Le fichier `migrations/.heads` permet de déclarer explicitement les migrations 
 004-add-roles.sh
 ```
 
-Sans ce fichier, `up` applique toutes les migrations détectées dans `migrations/` et `graph` détecte automatiquement les feuilles.
+Sans ce fichier, `up` applique toutes les migrations détectées dans `migrations/`.
 
 ## Hooks
 
