@@ -1,0 +1,7 @@
+data/
+migrations/
+hooks/
+.migrations.lock
+.shmig.lock
+.migrations_history
+.env
