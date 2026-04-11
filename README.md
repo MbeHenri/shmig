@@ -116,18 +116,6 @@ Déclare les dépendances en tête de script avec un commentaire `# depends_on=`
 Il est important de precise que une dependance est un chemins relatif du script shell de la migration correspondante.
 Il est relatif par rapport au repertoire `migrations`.
 
-Lors de l'exécution, shmig résout récursivement les dépendances et les applique dans le bon ordre avant la migration cible. Le graphe résultant est visualisable avec `./migrate.sh graph` :
-
-```txt
-  Graphe des dépendances
-  ══════════════════════
-  (racines = migrations dont personne ne dépend)
-
-[○] 003-add-users-index.sh
-    └── [✔] 002-create-users.sh
-        └── [✔] 001-init.sh
-```
-
 ## Fichier `.heads`
 
 Le fichier `migrations/.heads` permet de déclarer explicitement les migrations racines du graphe (celles dont aucune autre ne dépend). Quand il est présent :
@@ -213,9 +201,6 @@ curl -s -X POST "$SLACK_WEBHOOK" \
 
 # Liste détaillée avec groupement par heads
 ./migrate.sh list
-
-# Graphe des dépendances en arbre ASCII
-./migrate.sh graph
 
 # Aide
 ./migrate.sh help
