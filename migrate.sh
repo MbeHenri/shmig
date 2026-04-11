@@ -6,7 +6,7 @@
 # Usage : ./migrate.sh <command> [argument]
 
 set -eu
-export SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 . "$SCRIPT_DIR/shmig.lib/env.sh"
 . "$SCRIPT_DIR/shmig.lib/core.sh"
