@@ -130,6 +130,95 @@ apply_migration() {
     log "$mig appliquée"
 }
 
+apply_migration_iterative() {
+    local start_mig="$1"
+
+    # pile principale
+    local stack=()
+    # pile pour marquer les migrations en cours de traitement
+    local processing=()
+
+    stack+=("$start_mig")
+
+    while [ ${#stack[@]} -gt 0 ]; do
+        # prendre le dernier élément (LIFO)
+        local mig="${stack[-1]}"
+
+        # si déjà appliquée → on skip
+        if is_applied "$mig"; then
+            log "Skipping $mig (déjà appliqué)"
+            stack=("${stack[@]:0:${#stack[@]}-1}")
+            continue
+        fi
+
+        # vérifier fichier
+        if [ ! -f "$MIGRATIONS_DIR/$mig" ]; then
+            err "Fichier de migration introuvable: $MIGRATIONS_DIR/$mig"
+            exit 1
+        fi
+
+        # vérifier si déjà en cours de traitement
+        if [[ " ${processing[*]} " =~ " $mig " ]]; then
+            # toutes les dépendances sont supposées traitées → exécution
+            log "Applying $mig"
+
+            chmod +x "$MIGRATIONS_DIR/$mig"
+            bash "$MIGRATIONS_DIR/$mig"
+            local rc=$?
+
+            if [ $rc -ne 0 ]; then
+                err "La migration $mig a échoué (code $rc)"
+                exit $rc
+            fi
+
+            record_applied "$mig"
+            log "$mig appliquée"
+
+            # retirer de la pile
+            stack=("${stack[@]:0:${#stack[@]}-1}")
+            continue
+        fi
+
+        # marquer comme en cours
+        processing+=("$mig")
+
+        # récupérer dépendances
+        local deps
+        deps=$(parse_dependencies "$mig")
+
+        local has_unapplied_deps=0
+
+        for d in $deps; do
+            [ -z "$d" ] && continue
+
+            if ! is_applied "$d"; then
+                log "$mig dépend de $d — ajout dans la pile"
+                stack+=("$d")
+                has_unapplied_deps=1
+            fi
+        done
+
+        # si aucune dépendance à traiter → exécution directe
+        if [ $has_unapplied_deps -eq 0 ]; then
+            log "Applying $mig"
+
+            chmod +x "$MIGRATIONS_DIR/$mig"
+            bash "$MIGRATIONS_DIR/$mig"
+            local rc=$?
+
+            if [ $rc -ne 0 ]; then
+                err "La migration $mig a échoué (code $rc)"
+                exit $rc
+            fi
+
+            record_applied "$mig"
+            log "$mig appliquée"
+
+            stack=("${stack[@]:0:${#stack[@]}-1}")
+        fi
+    done
+}
+
 # ---------------------------------------------------------------------------
 # Rollback
 # ---------------------------------------------------------------------------

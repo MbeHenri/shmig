@@ -51,12 +51,12 @@ up)
         log "Fichier heads détecté"
         for h in $(get_heads); do
             echo "$h"
-            apply_migration "$h"
+            apply_migration_iterative "$h"
         done
     else
         for m in $(list_migrations); do
             echo "$m"
-            apply_migration "$m"
+            apply_migration_iterative "$m"
         done
     fi
     run_hook post-up
@@ -68,7 +68,7 @@ apply)
     fi
     acquire_lock
     run_hook pre-apply "$arg"
-    apply_migration "$arg"
+    apply_migration_iterative "$arg"
     run_hook post-apply "$arg"
     ;;
 down)
