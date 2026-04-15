@@ -5,3 +5,4 @@ hooks/
 .shmig.lock
 .migrations_history
 .env
+shmig.cfg

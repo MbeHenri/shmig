@@ -1,16 +1,15 @@
 #!/usr/bin/env bash
-# migrate.sh
 # Point d'entrée principal. Source les libs dans l'ordre puis dispatche
-# la commande demandée.
 #
 # Usage : ./migrate.sh <command> [argument]
 
 set -eu
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-. "$SCRIPT_DIR/shmig.lib/env.sh"
-. "$SCRIPT_DIR/shmig.lib/core.sh"
-. "$SCRIPT_DIR/shmig.lib/hooks.sh"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+. "$SCRIPT_DIR/lib/env.sh"
+. "$SCRIPT_DIR/lib/conf.sh"
+. "$SCRIPT_DIR/lib/core.sh"
+. "$SCRIPT_DIR/lib/hooks.sh"
 
 help() {
     cat <<'HELP'

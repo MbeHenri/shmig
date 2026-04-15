@@ -37,7 +37,7 @@ Systeme visant a gerer les migrations en programmation systeme (en shell/bash/sh
 ```txt
 .
 ├── migrate.sh                  # Point d'entrée principal
-├── shmig.lib/
+├── lib/
 │   ├── env.sh                  # Chargement .env et variables d'environnement
 │   ├── core.sh                 # Logique métier des migrations
 │   └── hooks.sh                # Système de hooks pre/post

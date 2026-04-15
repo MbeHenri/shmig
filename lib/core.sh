@@ -1,14 +1,16 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # Variables propres aux migrations et logique métier complète.
 # Dépend des variables définies dans lib/env.sh.
 
-MIGRATIONS_DIR="${MIGRATE_DIR:-"${SCRIPT_DIR}/migrations"}"
-HISTORY_FILE="${SCRIPT_DIR}/.migrations_history"
-LOCK_DIR="${SCRIPT_DIR}/.migrations.lock"
+MIGRATIONS_DIR="${SHMIG_MIGRATIONS_DIR:-"${SCRIPT_DIR}/.shmig.migrations"}"
+HISTORY_FILE="${SHMIG_HISTORY_FILE:-"${SCRIPT_DIR}/.shmig.history"}"
+LOCK_DIR="${SHMIG_LOCK_DIR:-"${SCRIPT_DIR}/.shmig.lock"}"
 HEADS_FILE="$MIGRATIONS_DIR/.heads"
 
-mkdir -p "$MIGRATIONS_DIR"
 
+echo "$MIGRATIONS_DIR"
+
+mkdir -p "$MIGRATIONS_DIR"
 if [ ! -f "$HISTORY_FILE" ]; then
     touch "$HISTORY_FILE"
 fi

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # Système de hooks exécutés avant/après chaque commande principale.
 #
 # Convention de nommage des fichiers dans hooks/ :
