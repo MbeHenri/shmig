@@ -9,6 +9,7 @@ Systeme visant a gerer les migrations en programmation systeme (en shell/bash/sh
   - [Fonctionnalités](#fonctionnalités)
   - [Arborescence](#arborescence)
   - [Installation](#installation)
+  - [Configuration](#configuration)
   - [Écrire une migration](#écrire-une-migration)
   - [Dépendances entre migrations](#dépendances-entre-migrations)
   - [Fichier `.heads`](#fichier-heads)
@@ -24,11 +25,10 @@ Systeme visant a gerer les migrations en programmation systeme (en shell/bash/sh
 ## Fonctionnalités
 
 - **Dépendances explicites** déclarées dans chaque script (`# depends_on=...`)
-- **Résolution automatique** des dépendances par récursion avant chaque application
+- **Résolution automatique** des dépendances par pile itérative avant chaque application
 - **Rollback** par migration (`down`) ou du dernier appliqué (`rollback-last`)
 - **Fichier `.heads`** pour définir les migrations racines d'un graphe de dépendances
 - **Hooks** `pre`/`post` par commande pour étendre le comportement sans toucher au cœur
-- **Graphe ASCII** des dépendances (`graph`)
 - **Verrou d'exécution** pour éviter les exécutions concurrentes
 - **Historique** persistant des migrations appliquées
 
@@ -37,8 +37,10 @@ Systeme visant a gerer les migrations en programmation systeme (en shell/bash/sh
 ```txt
 .
 ├── migrate.sh                  # Point d'entrée principal
+├── shmig.cfg                   # Configuration (optionnelle)
 ├── lib/
 │   ├── env.sh                  # Chargement .env et variables d'environnement
+│   ├── conf.sh                 # Chargement shmig.cfg et variables SHMIG_*
 │   ├── core.sh                 # Logique métier des migrations
 │   └── hooks.sh                # Système de hooks pre/post
 ├── hooks/                      # Scripts de hooks (optionnels, exécutables)
@@ -51,13 +53,12 @@ Systeme visant a gerer les migrations en programmation systeme (en shell/bash/sh
 │   ├── pre-rollback-last
 │   └── post-rollback-last
 ├── migrations/                 # Scripts de migration
-│   ├── .heads                  # Migrations racines du graphe (optionnel mais recommande)
+│   ├── .heads                  # Migrations racines du graphe (optionnel mais recommandé)
 │   ├── 001-init.sh
 │   ├── 002-create-users.sh
 │   └── 003-add-users-index.sh
-├── migration_datas/            # Données auxiliaires pour les migrations
 ├── .migrations_history         # Historique des migrations appliquées
-└── .migrations_lock            # Verrou d'exécution (supprimé automatiquement)
+└── .shmig.lock/                # Verrou d'exécution (supprimé automatiquement)
 ```
 
 ## Installation
@@ -68,6 +69,28 @@ chmod +x migrate.sh migrations/*.sh
 
 # Optionnel : copier un fichier .env.example vers .env pour les variables d'environnement
 cp .env.example .env
+```
+
+## Configuration
+
+La configuration se fait via `shmig.cfg` (copier depuis `shmig.example.cfg`) ou via des variables d'environnement. Les variables d'environnement ont toujours la priorité sur `shmig.cfg`.
+
+| Variable | Défaut | Description |
+| --- | --- | --- |
+| `SHMIG_MIGRATIONS_DIR` | `.shmig.migrations` | Répertoire des scripts de migration |
+| `SHMIG_HISTORY_FILE` | `.shmig.history` | Fichier d'historique des migrations appliquées |
+| `SHMIG_LOCK_DIR` | `.shmig.lock` | Répertoire de verrou (créé/supprimé atomiquement) |
+
+```bash
+# shmig.cfg
+SHMIG_MIGRATIONS_DIR="./migrations"
+SHMIG_HISTORY_FILE="./.migrations_history"
+```
+
+Si le verrou reste bloqué après un crash, le supprimer manuellement :
+
+```bash
+rm -rf .shmig.lock
 ```
 
 ## Écrire une migration
@@ -114,7 +137,7 @@ Déclare les dépendances en tête de script avec un commentaire `# depends_on=`
 # depends_on=002-create-users.sh,001-init.sh   # plusieurs dépendances séparées par virgule
 ```
 
-Il est important de precise que une dependance est un chemins relatif du script shell de la migration correspondante.
+Il est important de preciser qu'une dependance est un chemin relatif du script shell de la migration correspondante.
 Il est relatif par rapport au repertoire `migrations`.
 
 ## Fichier `.heads`

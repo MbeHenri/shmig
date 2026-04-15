@@ -6,3 +6,5 @@ hooks/
 .migrations_history
 .env
 shmig.cfg
+
+CLAUDE.md
