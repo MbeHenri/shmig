@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # migrate.sh
 # Point d'entrée principal. Source les libs dans l'ordre puis dispatche
 # la commande demandée.
