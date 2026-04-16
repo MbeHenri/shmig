@@ -193,11 +193,6 @@ apply_migration_iterative() {
         for d in $deps; do
             [ -z "$d" ] && continue
 
-            if [[ " ${processing[*]} " =~ " $d " ]]; then
-                err "Cycle détecté: $mig ↔ $d"
-                exit 1
-            fi
-
             if ! is_applied "$d"; then
                 log "$mig dépend de $d — ajout dans la pile"
                 stack+=("$d")
