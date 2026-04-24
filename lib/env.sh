@@ -5,3 +5,5 @@ if [ -f ".env" ]; then
     # shellcheck disable=SC2046
     export $(grep -v '^#' ".env" | xargs)
 fi
+
+export SHMIG_DIR="$SCRIPT_DIR"

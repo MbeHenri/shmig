@@ -2,9 +2,9 @@
 # Variables propres aux migrations et logique métier complète.
 # Dépend des variables définies dans lib/env.sh.
 
-MIGRATIONS_DIR="${SHMIG_MIGRATIONS_DIR:-"${SCRIPT_DIR}/.shmig.migrations"}"
-HISTORY_FILE="${SHMIG_HISTORY_FILE:-"${SCRIPT_DIR}/.shmig.history"}"
-LOCK_DIR="${SHMIG_LOCK_DIR:-"${SCRIPT_DIR}/.shmig.lock"}"
+MIGRATIONS_DIR="${SHMIG_MIGRATIONS_DIR:-"${SCRIPT_DIR}/migrations"}"
+HISTORY_FILE="${SHMIG_HISTORY_FILE:-"${SCRIPT_DIR}/.history"}"
+LOCK_DIR="${SHMIG_LOCK_DIR:-"${SCRIPT_DIR}/.lock"}"
 HEADS_FILE="$MIGRATIONS_DIR/.heads"
 
 
